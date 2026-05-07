@@ -1,0 +1,301 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../lib/generated/prisma-client-v5"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// SQLite doesn't support enums natively, Prisma maps them to Strings
+// enum DeliveryMethod {
+//   HOME_DELIVERY
+//   STORE_PICKUP
+// }
+
+// enum OrderStatus {
+//   PENDING
+//   PROCESSING
+//   SHIPPED
+//   DELIVERED
+// }
+
+// enum MenuItemType {
+//   INTERNAL
+//   PAGE
+//   EXTERNAL
+// }
+
+model User {
+  id        String   @id @default(cuid())
+  name      String?
+  email     String   @unique
+  password  String
+  role      String   @default("ADMIN")
+  preferences UserPreference?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model UserPreference {
+  id              String   @id @default(cuid())
+  userId          String   @unique
+  dashboardLayout String   @default("{}") // Stored as JSON
+  theme           String   @default("system")
+  density         String   @default("comfortable")
+  accent          String   @default("gold")
+  reduceMotion    Boolean  @default(false)
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Category {
+  id          String    @id @default(cuid())
+  name        String    @unique
+  slug        String    @unique
+  products    Product[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model VisualCategory {
+  id        String           @id @default(cuid())
+  name      String           @unique
+  slug      String           @unique
+  image     String?
+  parentId  String?
+  parent    VisualCategory?  @relation("SubVisualCategories", fields: [parentId], references: [id], onDelete: SetNull)
+  children  VisualCategory[] @relation("SubVisualCategories")
+  products  Product[]
+  pages     Page[]
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+
+  @@index([parentId])
+}
+
+model Product {
+  id               String           @id @default(cuid())
+  name             String
+  slug             String           @unique
+  description      String
+  price            Float
+  stock            Int              @default(0)
+  status           String           @default("ACTIVE") // ACTIVE, DRAFT, ARCHIVED
+  offerType        String?          // PERCENTAGE or FIXED
+  offerValue       Float?
+  offerStart       DateTime?
+  offerEnd         DateTime?
+  images           String           @default("[]") // Stored as JSON string
+  videos           String           @default("[]") // Stored as JSON string
+  featured         Boolean          @default(false)
+  bestSeller       Boolean          @default(false)
+  isNew            Boolean          @default(false)
+  topNotes         String           @default("[]") // Stored as JSON string
+  heartNotes       String           @default("[]") // Stored as JSON string
+  baseNotes        String           @default("[]") // Stored as JSON string
+  accords          String           @default("[]") // Stored as JSON string
+  type             String           @default("PERFUME") // PERFUME or REGULAR
+  categoryId       String
+  category         Category         @relation(fields: [categoryId], references: [id])
+  visualCategoryId String?
+  visualCategory   VisualCategory?  @relation(fields: [visualCategoryId], references: [id], onDelete: SetNull)
+  variants         ProductVariant[]
+  pages            Page[]           @relation("PageProducts")
+  orderItems       OrderItem[]
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+
+  @@index([categoryId])
+  @@index([visualCategoryId])
+  @@index([slug])
+  @@index([status])
+  @@index([offerStart])
+  @@index([offerEnd])
+}
+
+model ProductVariant {
+  id         String      @id @default(cuid())
+  productId  String
+  name       String
+  price      Float
+  stock      Int         @default(0)
+  isDefault  Boolean     @default(false)
+  product    Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  orderItems OrderItem[]
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+
+  @@index([productId])
+}
+
+model Page {
+  id        String     @id @default(cuid())
+  title     String
+  slug      String     @unique
+  excerpt   String?
+  content   String
+  collectionImage String?
+  published       Boolean         @default(true)
+  products         Product[]       @relation("PageProducts")
+  menuItems        MenuItem[]
+  visualCategoryId String?
+  visualCategory   VisualCategory? @relation(fields: [visualCategoryId], references: [id], onDelete: SetNull)
+  createdAt        DateTime        @default(now())
+  updatedAt DateTime   @updatedAt
+
+  @@index([slug])
+  @@index([published])
+}
+
+model MenuItem {
+  id        String   @id @default(cuid())
+  label     String
+  href      String?
+  type      String   @default("INTERNAL") // INTERNAL, PAGE, EXTERNAL
+  position  Int      @default(0)
+  visible   Boolean  @default(true)
+  pageId    String?
+  page      Page?    @relation(fields: [pageId], references: [id], onDelete: SetNull)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([position])
+  @@index([visible])
+  @@index([pageId])
+}
+
+model Order {
+  id             String      @id @default(cuid())
+  orderNumber    String      @unique
+  customerName   String
+  customerEmail  String
+  customerPhone  String
+  deliveryMethod String // HOME_DELIVERY, STORE_PICKUP
+  address        String?
+  city           String?
+  zip            String?
+  notes          String?
+  subtotal       Float       @default(0)
+  deliveryFee    Float       @default(0)
+  total          Float
+  status         String      @default("PENDING") // PENDING, PROCESSING, SHIPPED, DELIVERED, COMPLETED, CANCELED
+  paymentMethod  String      @default("PAY_ON_DELIVERY") // PAY_ON_DELIVERY, STORE_PICKUP
+  paymentStatus  String      @default("UNPAID") // UNPAID, PAID, REFUNDED, CANCELED
+  paymentReference String?
+  items          OrderItem[]
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+
+  @@index([customerEmail])
+  @@index([status])
+  @@index([paymentStatus])
+  @@index([createdAt])
+}
+
+model OrderItem {
+  id               String          @id @default(cuid())
+  orderId          String
+  productId        String?
+  productVariantId String?
+  productName      String
+  variantName      String?
+  productImage     String?
+  productPrice     Float
+  quantity         Int
+  order            Order           @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product          Product?        @relation(fields: [productId], references: [id], onDelete: SetNull)
+  variant          ProductVariant? @relation(fields: [productVariantId], references: [id], onDelete: SetNull)
+
+  @@index([orderId])
+  @@index([productId])
+  @@index([productVariantId])
+}
+
+model VisitorSession {
+  id          String   @id @default(cuid())
+  visitorId   String   @unique
+  path        String
+  referrer    String?
+  userAgent   String?
+  firstSeenAt DateTime @default(now())
+  lastSeenAt  DateTime @default(now())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([lastSeenAt])
+  @@index([path])
+}
+
+model PageView {
+  id        String   @id @default(cuid())
+  visitorId String
+  path      String
+  title     String?
+  referrer  String?
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  @@index([path])
+  @@index([createdAt])
+  @@index([visitorId])
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  type      String   @default("INFO") // INFO, ORDER, INVENTORY, INBOX, SYSTEM
+  title     String
+  message   String
+  href      String?
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([read])
+  @@index([createdAt])
+}
+
+model InboxMessage {
+  id            String       @id @default(cuid())
+  source        String       @default("EMAIL") // EMAIL, INSTAGRAM, FACEBOOK
+  externalId    String?
+  threadId      String?
+  sourceProfileId String?
+  fromName      String?
+  fromAddress   String?
+  toAddress     String?
+  ccAddress     String?
+  replyTo       String?
+  avatarUrl     String?
+  subject       String?
+  body          String
+  htmlBody      String?
+  rawHeaders    String       @default("[]")
+  blockedImages Int          @default(0)
+  attachments   String       @default("[]")
+  status        String       @default("UNREAD") // UNREAD, OPEN, ARCHIVED
+  lastMessageAt DateTime     @default(now())
+  replies       InboxReply[]
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  @@unique([source, externalId])
+  @@index([source])
+  @@index([status])
+  @@index([lastMessageAt])
+}
+
+model InboxReply {
+  id        String       @id @default(cuid())
+  messageId String
+  body      String
+  channel   String       @default("EMAIL")
+  sent      Boolean      @default(false)
+  error     String?
+  createdAt DateTime     @default(now())
+  message   InboxMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
+
+  @@index([messageId])
+  @@index([createdAt])
+}

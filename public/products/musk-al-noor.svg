@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1100">
+  <rect width="900" height="1100" fill="#080808"/>
+  <circle cx="450" cy="430" r="300" fill="#151515"/>
+  <path d="M355 250h190v124H355z" fill="#E8C75C"/>
+  <path d="M392 160h116v92H392z" fill="#111" stroke="#D4AF37" stroke-width="8"/>
+  <path d="M286 390c0-48 39-87 87-87h154c48 0 87 39 87 87v456c0 48-39 87-87 87H373c-48 0-87-39-87-87V390Z" fill="#111" stroke="#D4AF37" stroke-width="10"/>
+  <path d="M333 455h234v270H333z" fill="#f4efe0" stroke="#8A6A13" stroke-width="4"/>
+  <path d="M450 510c58 50 69 125 0 185-69-60-58-135 0-185Z" fill="#D4AF37"/>
+  <text x="450" y="600" text-anchor="middle" font-family="Georgia,serif" font-size="48" fill="#080808">نور</text>
+  <text x="450" y="795" text-anchor="middle" font-family="Georgia,serif" font-size="42" fill="#F5F5F5">Musk Al Noor</text>
+</svg>

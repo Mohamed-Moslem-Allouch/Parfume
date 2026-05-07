@@ -1,0 +1,17 @@
+{
+  "name": "Attar Luxe",
+  "short_name": "Attar Luxe",
+  "description": "Luxury perfume shop for oud, floral, woody, and musk fragrances.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#080808",
+  "theme_color": "#080808",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

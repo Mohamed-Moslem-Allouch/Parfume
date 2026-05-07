@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1100">
+  <rect width="900" height="1100" fill="#080808"/>
+  <circle cx="450" cy="430" r="300" fill="#211016"/>
+  <path d="M360 255h180v120H360z" fill="#E8C75C"/>
+  <path d="M395 160h110v96H395z" fill="#111" stroke="#D4AF37" stroke-width="8"/>
+  <path d="M288 390c0-48 39-87 87-87h150c48 0 87 39 87 87v456c0 48-39 87-87 87H375c-48 0-87-39-87-87V390Z" fill="#13090d" stroke="#D4AF37" stroke-width="10"/>
+  <path d="M333 455h234v270H333z" fill="#2b0f18" stroke="#8A6A13" stroke-width="4"/>
+  <circle cx="450" cy="585" r="76" fill="#D4AF37"/>
+  <path d="M450 511c38 36 38 111 0 148-39-37-39-112 0-148Z" fill="#7b1838"/>
+  <path d="M377 585c36-38 110-38 146 0-36 38-110 38-146 0Z" fill="#9f2450"/>
+  <text x="450" y="795" text-anchor="middle" font-family="Georgia,serif" font-size="42" fill="#F5F5F5">Rose Damas</text>
+</svg>

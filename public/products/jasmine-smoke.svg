@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1100">
+  <rect width="900" height="1100" fill="#080808"/>
+  <circle cx="450" cy="430" r="300" fill="#141617"/>
+  <path d="M350 248h200v126H350z" fill="#D4AF37"/>
+  <path d="M390 158h120v92H390z" fill="#111" stroke="#D4AF37" stroke-width="8"/>
+  <path d="M286 390c0-48 39-87 87-87h154c48 0 87 39 87 87v456c0 48-39 87-87 87H373c-48 0-87-39-87-87V390Z" fill="#111" stroke="#D4AF37" stroke-width="10"/>
+  <path d="M333 455h234v270H333z" fill="#101719" stroke="#8A6A13" stroke-width="4"/>
+  <circle cx="450" cy="590" r="86" fill="#D4AF37"/>
+  <path d="M450 492c20 36 17 69 0 98-17-29-20-62 0-98Z" fill="#f3ead0"/>
+  <path d="M450 688c-20-36-17-69 0-98 17 29 20 62 0 98Z" fill="#f3ead0"/>
+  <path d="M352 590c36-20 69-17 98 0-29 17-62 20-98 0Z" fill="#f3ead0"/>
+  <path d="M548 590c-36 20-69 17-98 0 29-17 62-20 98 0Z" fill="#f3ead0"/>
+  <text x="450" y="795" text-anchor="middle" font-family="Georgia,serif" font-size="42" fill="#F5F5F5">Jasmine Smoke</text>
+</svg>

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1100">
+  <rect width="900" height="1100" fill="#080808"/>
+  <circle cx="450" cy="410" r="290" fill="#1a1207"/>
+  <path d="M350 255h200v120H350z" fill="#D4AF37"/>
+  <path d="M385 160h130v95H385z" fill="#101010" stroke="#D4AF37" stroke-width="8"/>
+  <path d="M290 378c0-42 34-76 76-76h168c42 0 76 34 76 76v475c0 42-34 76-76 76H366c-42 0-76-34-76-76V378Z" fill="#111" stroke="#D4AF37" stroke-width="10"/>
+  <path d="M330 428h240v302H330z" fill="#150f08" stroke="#8A6A13" stroke-width="4"/>
+  <path d="M355 465c64 28 127 28 190 0v220c-64-31-127-31-190 0V465Z" fill="#D4AF37"/>
+  <text x="450" y="562" text-anchor="middle" font-family="Georgia,serif" font-size="52" fill="#080808" font-weight="700">OUD</text>
+  <text x="450" y="624" text-anchor="middle" font-family="Arial,sans-serif" font-size="28" fill="#080808">SAFFRON</text>
+</svg>

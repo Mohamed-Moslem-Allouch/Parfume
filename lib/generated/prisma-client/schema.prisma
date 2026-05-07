@@ -1,0 +1,192 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../lib/generated/prisma-client"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+// SQLite doesn't support enums natively, Prisma maps them to Strings
+// enum DeliveryMethod {
+//   HOME_DELIVERY
+//   STORE_PICKUP
+// }
+
+// enum OrderStatus {
+//   PENDING
+//   PROCESSING
+//   SHIPPED
+//   DELIVERED
+// }
+
+// enum MenuItemType {
+//   INTERNAL
+//   PAGE
+//   EXTERNAL
+// }
+
+model User {
+  id        String   @id @default(cuid())
+  name      String?
+  email     String   @unique
+  password  String
+  role      String   @default("ADMIN")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Category {
+  id        String     @id @default(cuid())
+  name      String     @unique
+  slug      String     @unique
+  parentId  String?
+  image     String?
+  parent    Category?  @relation("SubCategories", fields: [parentId], references: [id], onDelete: SetNull)
+  children  Category[] @relation("SubCategories")
+  products  Product[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  @@index([parentId])
+}
+
+model VisualCategory {
+  id        String           @id @default(cuid())
+  name      String           @unique
+  slug      String           @unique
+  image     String?
+  parentId  String?
+  parent    VisualCategory?  @relation("SubVisualCategories", fields: [parentId], references: [id], onDelete: SetNull)
+  children  VisualCategory[] @relation("SubVisualCategories")
+  products  Product[]
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+
+  @@index([parentId])
+}
+
+model Product {
+  id               String           @id @default(cuid())
+  name             String
+  slug             String           @unique
+  description      String
+  price            Float
+  stock            Int              @default(0)
+  images           String           @default("[]") // Stored as JSON string
+  videos           String           @default("[]") // Stored as JSON string
+  featured         Boolean          @default(false)
+  bestSeller       Boolean          @default(false)
+  isNew            Boolean          @default(false)
+  topNotes         String           @default("[]") // Stored as JSON string
+  heartNotes       String           @default("[]") // Stored as JSON string
+  baseNotes        String           @default("[]") // Stored as JSON string
+  accords          String           @default("[]") // Stored as JSON string
+  type             String           @default("PERFUME") // PERFUME or REGULAR
+  categoryId       String
+  category         Category         @relation(fields: [categoryId], references: [id])
+  visualCategoryId String?
+  visualCategory   VisualCategory?  @relation(fields: [visualCategoryId], references: [id], onDelete: SetNull)
+  variants         ProductVariant[]
+  pages            Page[]           @relation("PageProducts")
+  orderItems       OrderItem[]
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+
+  @@index([categoryId])
+  @@index([visualCategoryId])
+  @@index([slug])
+}
+
+model ProductVariant {
+  id         String      @id @default(cuid())
+  productId  String
+  name       String
+  price      Float
+  stock      Int         @default(0)
+  isDefault  Boolean     @default(false)
+  product    Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  orderItems OrderItem[]
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+
+  @@index([productId])
+}
+
+model Page {
+  id        String     @id @default(cuid())
+  title     String
+  slug      String     @unique
+  excerpt   String?
+  content   String
+  heroImage String?
+  published Boolean    @default(true)
+  products  Product[]  @relation("PageProducts")
+  menuItems MenuItem[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  @@index([slug])
+  @@index([published])
+}
+
+model MenuItem {
+  id        String   @id @default(cuid())
+  label     String
+  href      String?
+  type      String   @default("INTERNAL") // INTERNAL, PAGE, EXTERNAL
+  position  Int      @default(0)
+  visible   Boolean  @default(true)
+  pageId    String?
+  page      Page?    @relation(fields: [pageId], references: [id], onDelete: SetNull)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([position])
+  @@index([visible])
+  @@index([pageId])
+}
+
+model Order {
+  id             String      @id @default(cuid())
+  orderNumber    String      @unique
+  customerName   String
+  customerEmail  String
+  customerPhone  String
+  deliveryMethod String // HOME_DELIVERY, STORE_PICKUP
+  address        String?
+  city           String?
+  zip            String?
+  notes          String?
+  subtotal       Float       @default(0)
+  deliveryFee    Float       @default(0)
+  total          Float
+  status         String      @default("PENDING") // PENDING, PROCESSING, SHIPPED, DELIVERED
+  items          OrderItem[]
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+
+  @@index([customerEmail])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model OrderItem {
+  id               String          @id @default(cuid())
+  orderId          String
+  productId        String?
+  productVariantId String?
+  productName      String
+  variantName      String?
+  productImage     String?
+  productPrice     Float
+  quantity         Int
+  order            Order           @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product          Product?        @relation(fields: [productId], references: [id], onDelete: SetNull)
+  variant          ProductVariant? @relation(fields: [productVariantId], references: [id], onDelete: SetNull)
+
+  @@index([orderId])
+  @@index([productId])
+  @@index([productVariantId])
+}
