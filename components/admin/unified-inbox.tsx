@@ -168,6 +168,7 @@ export function UnifiedInbox({ messages }: { messages: InboxMessage[] }) {
   const [syncing, setSyncing] = useState(false);
   const [sending, setSending] = useState(false);
   const [notice, setNotice] = useState("");
+  const [showSidebar, setShowSidebar] = useState(true);
 
   const filtered = useMemo(() => {
     const term = search.trim().toLowerCase();
@@ -398,61 +399,4 @@ export function UnifiedInbox({ messages }: { messages: InboxMessage[] }) {
                       </p>
                       <h2 className="font-heading text-2xl text-mist">{selected.subject || "No subject"}</h2>
                       <p className="mt-2 text-sm text-muted">
-                        {selected.fromName || "Unknown"} {selected.fromAddress ? `<${selected.fromAddress}>` : ""}
-                      </p>
-                    </div>
-                  </div>
-                  <p className="text-sm text-muted">{formatDate(selected.lastMessageAt)}</p>
-                </div>
-              </div>
-              <div className="grid gap-4 p-5">
-                {selectedThread.map((threadMessage) =>
-                  threadMessage.source === "EMAIL" ? (
-                    <EmailBody key={threadMessage.id} message={threadMessage} richEmailView={richEmailView} />
-                  ) : (
-                    <article key={threadMessage.id} className="flex gap-3 rounded-md border border-white/10 bg-midnight p-4">
-                      <Avatar message={threadMessage} size="sm" />
-                      <div className="min-w-0 flex-1">
-                        <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-                          <p className="font-semibold text-mist">{threadMessage.fromName || threadMessage.source}</p>
-                          <p className="text-xs text-muted">{formatDate(threadMessage.lastMessageAt)}</p>
-                        </div>
-                        <p className="mt-3 whitespace-pre-wrap text-sm leading-7 text-mist">{threadMessage.body}</p>
-                      </div>
-                    </article>
-                  )
-                )}
-                {selected.replies.map((item) => (
-                  <article key={item.id} className="ml-auto w-full max-w-2xl rounded-md border border-gold/20 bg-gold/10 p-4 text-sm leading-7 text-mist">
-                    <p className="whitespace-pre-wrap">{item.body}</p>
-                    <p className="mt-3 text-xs text-muted">
-                      {item.sent ? "Sent" : item.error || "Not sent"} - {formatDate(item.createdAt)}
-                    </p>
-                  </article>
-                ))}
-                <form onSubmit={submitReply} className="sticky bottom-0 grid gap-3 border-t border-white/10 bg-obsidian/95 pt-5 backdrop-blur-xl">
-                  <textarea
-                    value={reply}
-                    onChange={(event) => setReply(event.target.value)}
-                    rows={5}
-                    className="input-field resize-none rounded-2xl"
-                    placeholder="Write a reply..."
-                  />
-                  <button type="submit" disabled={sending || !reply.trim()} className="btn-primary w-fit">
-                    <Send className="h-4 w-4" />
-                    {sending ? "Sending..." : "Send Reply"}
-                  </button>
-                </form>
-              </div>
-            </>
-          ) : (
-            <div className="px-6 py-16 text-center">
-              <p className="font-heading text-2xl text-mist">No messages yet</p>
-              <p className="mt-2 text-sm text-muted">Sync your email inbox or Meta channels to begin.</p>
-            </div>
-          )}
-        </section>
-      </div>
-    </div>
-  );
-}
+                

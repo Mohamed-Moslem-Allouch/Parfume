@@ -1,11 +1,38 @@
-node_modules
-.next
-.postgres-data
-out
-dist
+```
+# Dependencies
+node_modules/
+
+# Database
+prisma/dev.db
+
+# Environment
 .env
-.env*.local
-*.tsbuildinfo
-coverage
-public/uploads/*
-!public/uploads/.gitkeep
+.env.local
+.env.*
+
+# Logs and temp files
+*.log
+*.tmp
+
+# Editors
+.vscode/
+.idea/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Build outputs
+dist/
+build/
+*.egg-info/
+.coverage
+coverage/
+htmlcov/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+```
